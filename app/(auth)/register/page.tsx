@@ -10,8 +10,14 @@ import Form from "next/form";
 import registerAction from "./registerAction";
 import { Button } from "@/components/ui/button";
 import RegisterForm from "./RegisterForm";
+import { auth } from "@/auth";
+import { redirect } from "next/navigation";
 
 export default async function RegisterPage() {
+  const session = await auth();
+  if (session) {
+    return redirect("/dashboard");
+  }
 
   return (
     <div>

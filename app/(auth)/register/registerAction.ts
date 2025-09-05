@@ -26,31 +26,71 @@ export default async function registerAction(
     };
   }
 
-  try {
-    await database.user.create({
-      data: {
-        email: data.email,
-        password: hashSync(data.password),
-        nickname: data.nickname || "",
-        name: data.name,
-      },
-    });
-  } catch (error: any) {
-    if (error.code === "P2002") {
-      const target = error.meta?.target;
-      if (target.includes("email")) {
-        return {
-          message: "Email already in use",
-          success: false,
-        };
-      } else if (target.includes("nickname")) {
-        return {
-          message: "Nickname already in use",
-          success: false,
-        };
-      }
-    }
-    console.error("Registration error:", error);
-    throw new Error("Failed to create user");
+  const email = await database.user.findUnique({
+    where: {
+      email: data.email,
+    },
+  });
+
+  const nickname = await database.user.findUnique({
+    where: {
+      nickname: data.email,
+    },
+  });
+
+  if (email) {
+    return {
+      message: "Email already in use",
+      success: false,
+    };
   }
+
+  if (nickname) {
+    return {
+      message: "Nickname already in use",
+      success: false,
+    };
+  }
+
+  await database.user.create({
+    data: {
+      email: data.email,
+      password: hashSync(data.password),
+      nickname: data.nickname,
+      name: data.name,
+    },
+  });
+
+  return {
+    message: "User created!",
+    success: true,
+  };
+
+  // try {
+  //   await database.user.create({
+  //     data: {
+  //       email: data.email,
+  //       password: hashSync(data.password),
+  //       nickname: data.nickname || "",
+  //       name: data.name,
+  //     },
+  //   });
+  // } catch (error: any) {
+  //   if (error.code === "P2002") {
+  //     const target = error.meta?.target;
+  //     if (target.includes("email")) {
+  //       return {
+  //         message: "Email already in use",
+  //         success: false,
+  //       };
+  //     } else if (target.includes("nickname")) {
+  //       return {
+  //         message: "Nickname already in use",
+  //         success: false,
+  //       };
+  //     }
+  //   }
+  //   console.error("Registration error:", error);
+  //   throw new Error("Failed to create user");
+  // }
 }
