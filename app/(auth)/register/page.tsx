@@ -3,15 +3,12 @@ import {
   CardContent,
   CardDescription,
   CardHeader,
+  CardFooter,
 } from "@/components/ui/card";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import Form from "next/form";
-import registerAction from "./registerAction";
-import { Button } from "@/components/ui/button";
-import RegisterForm from "./RegisterForm";
 import { auth } from "@/auth";
 import { redirect } from "next/navigation";
+import RegisterForm from "./RegisterForm";
+import Link from "next/link";
 
 export default async function RegisterPage() {
   const session = await auth();
@@ -20,15 +17,31 @@ export default async function RegisterPage() {
   }
 
   return (
-    <div>
-      <Card className="max-w-sm w-full rounded-2xl mt-12">
-        <CardHeader>
-          <h2 className="text-xl font-bold">Register</h2>
-          <CardDescription>It's fun (and free)</CardDescription>
+    <div className="flex items-center justify-center min-h-screen bg-gradient-to-br from-gray-50 to-gray-100 p-4">
+      <Card className="w-full max-w-md rounded-2xl shadow-xl border border-gray-200 bg-white">
+        <CardHeader className="space-y-2 text-center">
+          <h2 className="text-3xl font-bold text-gray-900">Create your account</h2>
+          <CardDescription className="text-gray-600">
+            It’s quick, easy, and free 🚀
+          </CardDescription>
         </CardHeader>
+
         <CardContent>
           <RegisterForm />
         </CardContent>
+
+        <CardFooter className="flex justify-center">
+          <p className="text-sm text-gray-500">
+            Already registered?{" "}
+            <Link
+              href="/login"
+              className="text-primary font-medium hover:underline hover:opacity-90 transition"
+              aria-label="Go to login page"
+            >
+              Login here
+            </Link>
+          </p>
+        </CardFooter>
       </Card>
     </div>
   );

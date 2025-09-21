@@ -1,26 +1,43 @@
-import type { Metadata } from 'next'
-import { Inter } from 'next/font/google'
-import './globals.css'
+import type { Metadata } from "next";
+import { Inter } from "next/font/google";
+import "./globals.css";
 
-const inter = Inter({ subsets: ['latin'] })
+import { ThemeProvider } from "@/components/theme-provider";
+import { redirect } from "next/navigation";
+import { auth } from "@/auth";
+
+const inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
-  title: 'GameLog - Seu diário de jogos',
-  description: 'Acompanhe os jogos que você jogou e compartilhe suas experiências',
-}
+  title: "GameLog - Seu diário de jogos",
+  description:
+    "Acompanhe os jogos que você jogou e compartilhe suas experiências",
+};
 
-export default function RootLayout({
+export default async function RootLayout({
   children,
 }: {
-  children: React.ReactNode
+  children: React.ReactNode;
 }) {
+  const session = await auth();
+  // if (!session) {
+  //   redirect("/login");
+  // }
+
+  const userName = session?.user?.name;
+
   return (
-    <html lang="pt-BR">
+    <html lang="pt-BR" suppressHydrationWarning>
       <body className={inter.className}>
-          <div className="min-h-screen bg-gray-50">
-            {children}
-          </div>
+        <ThemeProvider
+          attribute="class"
+          defaultTheme="system"
+          enableSystem
+          disableTransitionOnChange
+        >
+          <main>{children}</main>
+        </ThemeProvider>
       </body>
     </html>
-  )
+  );
 }
