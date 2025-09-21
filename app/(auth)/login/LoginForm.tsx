@@ -7,7 +7,7 @@ import Form from "next/form";
 import loginAction from "./loginAction";
 import { useActionState } from "react";
 
-export default async function LoginForm() {
+export default function LoginForm() {
   const [state, formAction, isPending] = useActionState(loginAction, null);
 
   return (
